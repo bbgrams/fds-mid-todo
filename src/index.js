@@ -64,7 +64,20 @@ async function drawTodoList(){
 
   // 2. 내용 채우고 이벤트 리스너 등록하기
   // 배열에 있는 할일 항목들을 불러온 다음에 html의 li로
-  const todoListEl = fragment.querySelector('.todo-list')
+  const todoListEl = fragment.querySelector('.todo-list');
+  const todoFormEl = fragment.querySelector('.todo-form');
+
+  todoFormEl.addEventListener('submit', async e => {
+    e.preventDefault()
+    const body = e.target.elements.body.value
+    const res = await api.post('/todos', {
+      body,
+      complete : false
+    })
+    if(res.status === 201){ // 불러오는것에 성공했다면
+      drawTodoList()
+    }
+  })
 
   list.forEach(todoItem => { // todoitem템플릿을 복사해서 todoitem템플릿에 넣어준다
     // 1. 템플릿 복사
@@ -84,3 +97,4 @@ async function drawTodoList(){
 }
 
 drawLoginForm()
+
