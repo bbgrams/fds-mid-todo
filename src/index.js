@@ -49,9 +49,7 @@ function drawLoginForm(){
     })
     localStorage.setItem('token', res.data.token)
 
-    // 임시 테스트 코드
-    const res2 = await api.get('/todos')
-    alert(JSON.stringify(res2.data))
+    drawTodoList()
   })
 
   // 3. 문서 내부에 삽입하기
@@ -59,20 +57,8 @@ function drawLoginForm(){
 }
 
 async function drawTodoList(){
-  const list = [
-    {
-      id: 1,
-      userId : 2,
-      body : '비비 병원가기',
-      complete : false,
-    },
-    {
-      id: 2,
-      userId: 2,
-      body: '아이패드',
-      complete: false,
-    }
-  ]
+  const res = await api.get('/todos')
+  const list = res.data
   // 1. 템플릿 복사
   const fragment = document.importNode(templates.todoList, true)
 
@@ -93,7 +79,8 @@ async function drawTodoList(){
   })
 
   // 3. 문서 내부에 삽입하기
+  rootEl.textContent = '';
   rootEl.appendChild(fragment)
 }
 
-drawTodoList()
+drawLoginForm()
