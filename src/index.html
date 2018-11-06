@@ -18,6 +18,7 @@
 
   <template id="todo-list">
     <h1>할 일 목록</h1>
+    <button class="logout">로그아웃</button>
     <form class="todo-form">
       <input type="text" name="body">
       <button>등록</button>
@@ -27,6 +28,7 @@
 
   <template id="todo-item">
     <li class="todo-item">
+      <input type="checkbox" name="complete" class="complete">
       <span class="body"></span>
       <button class="delete">삭제</button>
     </li>

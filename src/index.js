@@ -53,6 +53,7 @@ function drawLoginForm(){
   })
 
   // 3. 문서 내부에 삽입하기
+  rootEl.textContent = ''
   rootEl.appendChild(fragment)
 }
 
@@ -68,7 +69,15 @@ async function drawTodoList(){
   const todoListEl = fragment.querySelector('.todo-list');
   const todoFormEl = fragment.querySelector('.todo-form');
   const todoItemEl = fragment.querySelector('.todo-item');
+  const logoutEl = fragment.querySelector('.logout')
 
+  // * 로그아웃 기능. 절차 :
+  logoutEl.addEventListener('click', e => { // 서버에 요청 보낼 일이 없기 때문에 비동기로 제어하지 않음.
+    // 1. 토큰 삭제
+    localStorage.removeItem('token')
+    // 2. 로그인 폼 보여주기
+    drawLoginForm()
+  })
 
   todoFormEl.addEventListener('submit', async e => {
     e.preventDefault()
@@ -89,6 +98,24 @@ async function drawTodoList(){
     // 2. 내용 채우고 이벤트 리스너 등록하기
     const bodyEl = fragment.querySelector('.body')
     const deleteEl = fragment.querySelector('.delete')
+    const completeEl = fragment.querySelector('.complete');
+
+    if(todoItem.complete){ // complete가 true면 (=할일을 체크하면)
+      // checked라는 attribute가 인풋박스에 붙었다. checked = boolean attribute
+      completeEl.setAttribute('checked', '')
+    }
+
+    // * 할일 체크 기능
+    completeEl.addEventListener('click', async e =>{
+      e.preventDefault();
+      await api.patch('/todos/' + todoItem.id,{
+        // 원래 true였으면 !true(=false)로 바꾸고, 원래 false면 !false(=true)로 바꿔준다
+        // 길게 풀면 if~로도 할 수 있음.
+        complete : !todoItem.complete
+      })
+      drawTodoList()
+    })
+
 
     // * 항목 삭제 기능
     deleteEl.addEventListener("click", async e => {
@@ -120,3 +147,9 @@ if(localStorage.getItem('token')){
 }
 
 
+// * 로그아웃 기능 (=토큰을 지우는 것. 우리는 로컬스토리지에 토큰을 저장하니까.)
+// 로그아웃 후 로그인 폼 보여주기
+
+// * 할일 완료 기능 - 체크박스
+// 체크박스를 통해 할 일 완료를 표시하고, 체크박스를 클릭하면 할 일 완료여부가 변경되는 기능
+// (= complete라는 속성을 true로 저장)
