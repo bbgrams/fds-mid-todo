@@ -58,6 +58,7 @@ function drawLoginForm(){
 
 async function drawTodoList(){
   const res = await api.get('/todos')
+  // 응답받은 body의 데이터가 list에 들어있다.
   const list = res.data
   // 1. 템플릿 복사
   const fragment = document.importNode(templates.todoList, true)
@@ -66,6 +67,8 @@ async function drawTodoList(){
   // 배열에 있는 할일 항목들을 불러온 다음에 html의 li로
   const todoListEl = fragment.querySelector('.todo-list');
   const todoFormEl = fragment.querySelector('.todo-form');
+  const todoItemEl = fragment.querySelector('.todo-item');
+
 
   todoFormEl.addEventListener('submit', async e => {
     e.preventDefault()
@@ -75,7 +78,7 @@ async function drawTodoList(){
       complete : false
     })
     if(res.status === 201){ // 불러오는것에 성공했다면
-      drawTodoList()
+      drawTodoList() // 사실 axios 는 불러오는것에 성공하면 자동으로 다음 소스를 진행 함. 불러오지 못하면 자동으로 에러를 출력.
     }
   })
 
@@ -85,6 +88,17 @@ async function drawTodoList(){
 
     // 2. 내용 채우고 이벤트 리스너 등록하기
     const bodyEl = fragment.querySelector('.body')
+    const deleteEl = fragment.querySelector('.delete')
+
+    // * 항목 삭제 기능
+    deleteEl.addEventListener("click", async e => {
+      // 삭제 요청 보내기
+      await api.delete('/todos/' + todoItem.id)
+
+      // 성공 시 할 일 목록 다시 그리기
+      // await가 성공하면 자동으로 아래 코드가 실행되고, 실패하면 코드가 실행되지 않는다.
+      drawTodoList()
+    });
 
     bodyEl.textContent = todoItem.body
     // 3. 문서 내부에 삽입하기
@@ -97,4 +111,5 @@ async function drawTodoList(){
 }
 
 drawLoginForm()
+
 
