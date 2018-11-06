@@ -110,6 +110,13 @@ async function drawTodoList(){
   rootEl.appendChild(fragment)
 }
 
-drawLoginForm()
+// * 만약 로그인을 한 상태(= 로컬스토리지에 토큰이 저장되어있는 상태)라면 바로 파일 목록을 보여주고
+// 만약 로컬스토리지에서 토큰을 가져올 수 있으면 true(저장되어있는 값을 가져오면 true)
+if(localStorage.getItem('token')){
+  drawTodoList()
+}else{
+  // 아니라면 로그인 폼을 보여준다. (저장되어있지 않는 가져오려고 하면 null(false)가 뜬다.)
+  drawLoginForm()
+}
 
 
